@@ -1,5 +1,8 @@
+/*import fonts*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Rowdies:wght@300;400;700&display=swap');
+
+/*color palette*/
 :root {
     --redcmyk: #DC3129;
     --harvestgold: #F3AC05;
@@ -16,23 +19,25 @@
     scroll-behavior: smooth;
 }
 
-/*LESSON: for percentage heights to work properly, the parent 
-elements must also have a defined height.*/
-
-/* html, body {
-    height: 100%;
-} */
-
-.home-nav{
-    background-color:white;
+.home-nav {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
 }
 
-.home-nav ul{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content:space-evenly;
+.nav-nav ul {
     list-style-type: none;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
     margin: 0;
     padding: 0;
+}
+
+.nav-nav ul li {
+    margin: 0;
+    padding: 0 10px;
 }
