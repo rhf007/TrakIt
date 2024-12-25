@@ -32,9 +32,12 @@ a {
 }
 
 .logo{
-    text-decoration: none;
     font-size: 3em;
     color: var(--harvestgold);
+}
+
+.logo, .nav-nav a{
+    text-decoration: none;
 }
 
 .nav-nav ul {
@@ -50,6 +53,10 @@ a {
 .nav-nav ul li {
     margin: 0 10px;
     font-size: 1.6em;
+    color: var(--babypowder);
+}
+
+.nav-nav a{
     color: var(--babypowder);
 }
 
