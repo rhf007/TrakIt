@@ -5,8 +5,8 @@
 /*color palette*/
 :root {
     --redcmyk: #DC3129;
-    --harvestgold: #F3AC05;
-    --babypowder: #FDFFFC;
+    --harvestgold: #F3A712;
+    --babypowder: #EBF5DF;
     --richblack: #04080F;
     --prussianblue: #003049;
 }
@@ -17,9 +17,6 @@
     font-family: "Rowdies", "Poppins", sans-serif;
     box-sizing: border-box;
     scroll-behavior: smooth;
-}
-html, body {
-    width: 100vw;
 }
 
 a {
@@ -110,4 +107,76 @@ a {
     width: calc(var(--size) - var(--padding) - var(--padding));
     aspect-ratio: 1;
     cursor: pointer;
+}
+
+section {
+    padding: 50px;
+}
+.main {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: url('../images/Watch-Free-Hero-2048x1152-3.png') no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+.main div{
+    width: 75%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main h1{
+    font-size: 4em;
+    color: var(--harvestgold);
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    color: var(--harvestgold);
+    font-size: 2.2em;
+    font-weight: 800;
+    margin-bottom: 30px;
+
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+
+.card {
+    background-color: var(--babypowder) !important;
+    /*experimental image*/
+    /*TODO: Implement card image functionailty in html not css so that images are fetched from api easily*/
+    background-image: url('../images/favicon-32x32.png');
+    width: 21.25em;
+    /*Arguments:
+    top/bottom shadow
+    right/left shadow
+    blur value
+    color & transparency*/
+    box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
+    border-radius: 10px;
+    padding: 25px;
+    margin: 15px;
+    transition: 0.7s ease;
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
+
+.icon {
+    color: var(--harvestgold);
+    font-size: 8em;
+    text-align: center;
 }
