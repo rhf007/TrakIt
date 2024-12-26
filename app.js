@@ -20,6 +20,10 @@ app.get('/sign-in', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register')
 });
+
+app.get('/movies', (req, res) => {
+    res.render('movies')
+})
 app.listen(5000, () => {
     console.log('server listening on port 5000')
 })
