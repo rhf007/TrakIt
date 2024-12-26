@@ -62,14 +62,14 @@ a {
 .nav-nav ul li {
     margin: 0 10px;
     font-size: 1.6em;
-    color: var(--babypowder);
 }
 
 .nav-nav a{
     color: var(--babypowder);
 }
-
-
+.nav-nav a:hover{
+    color: var(--harvestgold);
+}
 
 #form-div{
     width: 24em;
@@ -124,8 +124,12 @@ input{
     font-weight: 100;
 }
 
-a{
+p > a{
     color: var(--harvestgold) !important;
+}
+
+p > a:hover{
+    text-decoration: none;
 }
 
 .btn{

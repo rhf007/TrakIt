@@ -53,11 +53,13 @@ a {
 .nav-nav ul li {
     margin: 0 10px;
     font-size: 1.6em;
-    color: var(--babypowder);
 }
 
 .nav-nav a{
     color: var(--babypowder);
+}
+.nav-nav a:hover{
+    color: var(--harvestgold);
 }
 
 .search-bar {
