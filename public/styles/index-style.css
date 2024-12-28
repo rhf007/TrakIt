@@ -126,7 +126,9 @@ section {
 }
 section h3{
     margin-left:0.5em;
-    color: var(--richblack)
+    margin-top: 1em;
+    color: var(--richblack);
+    font-size: 2em;
 }
 .main {
     width: 100%;
