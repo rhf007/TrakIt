@@ -164,9 +164,6 @@ section {
 
 .card {
     background-color: var(--babypowder) !important;
-    /*experimental image*/
-    /*TODO: Implement card image functionailty in html not css so that images are fetched from api easily*/
-    background-image: url('../images/favicon-32x32.png');
     width: 21.25em;
     /*Arguments:
     top/bottom shadow
@@ -175,13 +172,18 @@ section {
     color & transparency*/
     box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
     border-radius: 10px;
-    padding: 25px;
+    /* padding: 25px; */
     margin: 15px;
     transition: 0.7s ease;
 }
 
 .card:hover {
     transform: scale(1.1);
+}
+
+.card img {
+    width: 100%; /* Make the image scale proportionally to the card */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
 }
 
 .icon {
