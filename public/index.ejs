@@ -38,32 +38,63 @@
             <h1>All your movies and TV shows in one place</h1>
         </div>
     </section>
-    <!--TODO: diplay movies and tvshows in sections of "now playing, popular, top rated, upcoming"-->
+    <!--TODO: Limit reults to 15 cards-->
     <section id="movie-section">
         <h2 class="title">Movies</h2>
         <h3>Now Playing</h3>
         <div class="content">
-            <% movies.forEach(movie => { %>
+            <% now_playing_movies.forEach(now_playing_movie => { %>
                 <div class="card">
                     <a class="movie-poster">
-                        <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" alt="<%= movie.title %>">
+                        <img src="https://image.tmdb.org/t/p/w500<%= now_playing_movie.poster_path %>" alt="<%= now_playing_movie.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+        <h3>Popular</h3>
+        <div class="content">
+            <% popular_movies.forEach(popular_movie => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= popular_movie.poster_path %>" alt="<%= popular_movie.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+        <h3>Top Rated</h3>
+        <div class="content">
+            <% top_rated_movies.forEach(top_rated_movie => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= top_rated_movie.poster_path %>" alt="<%= top_rated_movie.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+        <h3>Upcoming</h3>
+        <div class="content">
+            <% upcoming_movies.forEach(upcoming_movie => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= upcoming_movie.poster_path %>" alt="<%= upcoming_movie.title %>">
                     </a>
                 </div>
             <% }) %>
         </div>
     </section>
-    <section id="tv-section">
+    <!--TODO: Do the same as above for tv shows-->
+    <!-- <section id="tv-section">
         <h2 class="title">TV Shows</h2>
         <div class="content">
-            <% tvs.forEach(tv => { %>
+            <%# tvs.forEach(tv => { %>
                 <div class="card">
                     <a class="tv-poster">
-                        <img src="<%=tv.image.medium%>" alt="<%= tv.name %>">
+                        <img src="<%#=tv.image.medium%>" alt="<%#= tv.name %>">
                     </a>
                 </div>
-            <% }) %>
+            <%# }) %>
         </div>
-    </section>
+    </section> -->
     
     <script src="./scripts/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
