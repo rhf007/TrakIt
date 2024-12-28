@@ -122,7 +122,11 @@ a {
 }
 
 section {
-    padding: 50px 0;
+    padding: 50px;
+}
+section h3{
+    margin-left:0.5em;
+    color: var(--richblack)
 }
 .main {
     width: 100%;
@@ -159,7 +163,7 @@ section {
 
 .content {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
 
@@ -189,3 +193,4 @@ section {
 #tv-section{
     background-color: var(--redcmyk);
 }
+

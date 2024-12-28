@@ -143,28 +143,21 @@ section {
 
 .card {
     background-color: var(--babypowder) !important;
-    /*experimental image*/
-    /*TODO: Implement card image functionailty in html not css so that images are fetched from api easily*/
-    background-image: url('../images/favicon-32x32.png');
-    width: 21.25em;
-    /*Arguments:
-    top/bottom shadow
-    right/left shadow
-    blur value
-    color & transparency*/
+    width: 10em;
     box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
-    border-radius: 10px;
-    padding: 25px;
+    border: none !important;
+    outline: none;
+    border-radius: 0.5em !important;
     margin: 15px;
     transition: 0.7s ease;
+    overflow: hidden;
 }
 
 .card:hover {
     transform: scale(1.1);
 }
 
-.icon {
-    color: var(--harvestgold);
-    font-size: 8em;
-    text-align: center;
+.card img {
+    width: 100%;
+    object-fit: cover;
 }
