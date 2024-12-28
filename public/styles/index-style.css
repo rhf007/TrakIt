@@ -26,13 +26,15 @@ a {
 .home-nav {
     position: fixed;
     width: 100vw;
-    background-color: var(--redcmyk);
+    /* background-color: var(--redcmyk); */
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 30px;
     z-index: 999;
-    
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0); /* Start transparent */
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
 }
 
 .logo{
