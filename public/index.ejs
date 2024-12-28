@@ -13,6 +13,7 @@
     <script src="https://kit.fontawesome.com/888c06406f.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <!--TODO: MAKE NAVBAR TRANSPARENT AND THEN TURN BLACK OR ANY OTHER COLOR WHEN SCROLLING-->
     <header>
         <div class="home-nav">
             <a class="logo" href="/">TRAKIT</a>
@@ -38,18 +39,26 @@
             <h1>All your movies and TV shows in one place</h1>
         </div>
     </section>
-    <section>
+    <section id="movie-section">
         <h2 class="title">Movies</h2>
         <div class="content">
             <% movies.forEach(movie => { %>
                 <div class="card">
-                    <div class="icon">
+                    <a class="movie-poster">
                         <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" alt="<%= movie.title %>">
-                    </div>
-                    <div class="details">
-                        <h3><%= movie.title %></h3>
-                        <p><%= movie.release_date %></p>
-                    </div>
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+    <section id="tv-section">
+        <h2 class="title">TV Shows</h2>
+        <div class="content">
+            <% tvs.forEach(tv => { %>
+                <div class="card">
+                    <a class="tv-poster">
+                        <img src="<%=tv.image.medium%>" alt="<%= tv.name %>">
+                    </a>
                 </div>
             <% }) %>
         </div>

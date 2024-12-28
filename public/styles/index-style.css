@@ -24,11 +24,15 @@ a {
 }
 
 .home-nav {
+    position: fixed;
+    width: 100vw;
     background-color: var(--redcmyk);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 30px;
+    z-index: 999;
+    
 }
 
 .logo{
@@ -69,12 +73,10 @@ a {
     display: flex;
     justify-content: flex-end;
     background-color: var(--babypowder);
-    /* box-shadow: 0 10px 10px 0 #d6d9e2; */
     border-radius: 100px;
     outline: 1px solid transparent;
     overflow: hidden;
     padding: var(--padding);
-    /* margin-inline: auto; */
     width: var(--size);
     height: var(--size);
     max-width: 100%;
@@ -92,7 +94,6 @@ a {
     background-color: transparent;
     border: none;
     outline: none;
-    /* margin-inline: 1rem; */
     padding: 8px;
     flex: auto;
     opacity: 0;
@@ -119,7 +120,7 @@ a {
 }
 
 section {
-    padding: 50px;
+    padding: 50px 0;
 }
 .main {
     width: 100%;
@@ -164,17 +165,14 @@ section {
 
 .card {
     background-color: var(--babypowder) !important;
-    width: 21.25em;
-    /*Arguments:
-    top/bottom shadow
-    right/left shadow
-    blur value
-    color & transparency*/
+    width: 10em;
     box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
-    border-radius: 10px;
-    /* padding: 25px; */
+    border: none !important;
+    outline: none;
+    border-radius: 0.5em !important;
     margin: 15px;
     transition: 0.7s ease;
+    overflow: hidden;
 }
 
 .card:hover {
@@ -182,12 +180,10 @@ section {
 }
 
 .card img {
-    width: 100%; /* Make the image scale proportionally to the card */
-    object-fit: cover; /* Ensure the image covers the area without distortion */
+    width: 100%;
+    object-fit: cover;
 }
 
-.icon {
-    color: var(--harvestgold);
-    font-size: 8em;
-    text-align: center;
+#tv-section{
+    background-color: var(--redcmyk);
 }
