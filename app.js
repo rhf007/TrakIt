@@ -4,7 +4,6 @@ const app = express()
 require('dotenv').config();
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb(process.env.TMDB_API_KEY)
-const axios = require('axios')
 
 
 
@@ -72,6 +71,7 @@ app.get('/', async(req, res) => {
         }
     })
 
+    //TODO: CREATE DATABSE, HANDLE FORM VALIDATION, ETC
     app.get('/sign-in', (req, res) => {
         res.render('sign-in')
     });
@@ -81,31 +81,25 @@ app.get('/', async(req, res) => {
     });
     
     app.get('/movies', async(req, res) => {
-        const Movies = []
-        const TV = []
-        let movie_slice = []
-        let tv_slice = []
-        const pages = 2
-        
+        let Movies = []
+        const pages = 5
+        //TODO: PAGINATION?????
         try{
             for (let i = 1; i <= pages; i++) {
                 const movie_results = await moviedb.discoverMovie({page: i})
                 Movies.push(...movie_results.results)
             }
-            
-            movie_slice = Movies.slice(0, 30)
-            
-            const tv_results = await axios.get('https://api.tvmaze.com/shows')
-            
-            TV.push(...tv_results.data)
-            tv_slice = TV.slice(0, 30)
-            
-            res.render('movies', {movies: movie_slice, tvs: tv_slice})
+            const genre_response = await moviedb.genreMovieList()
+            const genres = genre_response.genres
+            const countries = await moviedb.countries()
+            res.render('movies', {movies: Movies, genres: genres, countries: countries})
         } catch(error){
-            console.error(`Error fetching movies: ${error}`);
+            console.error(`Error fetching data: ${error}`);
             res.status(500).send('Internal Server Error');
         }
     })
+
+    //TODO:IMPLEMENT SERIES ROUTE
     app.listen(5000, () => {
         console.log('server listening on port 5000')
     })
