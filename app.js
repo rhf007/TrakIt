@@ -19,6 +19,10 @@ app.get('/', async(req, res) => {
     let popular_movies = []
     let top_rated_movies = []
     let upcoming_movies =[]
+    let airing_today_series = []
+    let popular_series = []
+    let on_the_air_series = []
+    let top_rated_series = []
 
     try {
         const now_playing_results = await moviedb.movieNowPlaying()
@@ -37,11 +41,31 @@ app.get('/', async(req, res) => {
         upcoming_movies.push(...upcoming_results.results)
         const upcoming_slice = upcoming_movies.slice(0, 18)
 
+        const airing_today_results = await moviedb.tvAiringToday()
+        airing_today_series.push(...airing_today_results.results)
+        const airing_today_slice = airing_today_series.slice(0, 18)
+
+        const popular_series_results = await moviedb.tvPopular()
+        popular_series.push(...popular_series_results.results)
+        const popular_series_slice = popular_series.slice(0, 18)
+
+        const on_the_air_results = await moviedb.tvOnTheAir()
+        on_the_air_series.push(...on_the_air_results.results)
+        const on_the_air_slice = on_the_air_series.slice(0, 18)
+
+        const top_rated_series_results = await moviedb.tvTopRated()
+        top_rated_series.push(...top_rated_series_results.results)
+        const top_rated_series_slice = top_rated_series.slice(0, 18)
+
         res.render('index', {
             now_playing_movies: now_playing_slice,
             popular_movies: popular_slice,
             top_rated_movies: top_rated_slice,
-            upcoming_movies: upcoming_slice
+            upcoming_movies: upcoming_slice,
+            airing_today_series: airing_today_slice,
+            popular_series: popular_series_slice,
+            on_the_air_series: on_the_air_slice,
+            top_rated_series: top_rated_series_slice
         })} catch (error) {
             console.log(error)
             res.status(500).send('Internal Server Error')

@@ -15,7 +15,7 @@
     padding: 0;
     margin: 0;
     font-family: "Rowdies", "Poppins", sans-serif;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     scroll-behavior: smooth;
 }
 
@@ -127,8 +127,15 @@ section {
 section h3{
     margin-left:0.5em;
     margin-top: 1em;
-    color: var(--richblack);
     font-size: 2em;
+}
+
+#movie-section h3{
+    color: var(--richblack);
+}
+
+#tv-section h3{
+    color: var(--babypowder);
 }
 .main {
     width: 100%;
@@ -187,9 +194,17 @@ section h3{
     transform: scale(1.1);
 }
 
-.card img {
+.card a {
+    aspect-ratio: 2 / 3; 
+    display: block;
+    overflow: hidden;
+}
+
+.card a > img {
+    height: 100%;
     width: 100%;
     object-fit: cover;
+    
 }
 
 #tv-section{

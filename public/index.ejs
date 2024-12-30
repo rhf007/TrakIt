@@ -81,19 +81,50 @@
             <% }) %>
         </div>
     </section>
-    <!--TODO: Do the same as above for tv shows-->
-    <!-- <section id="tv-section">
-        <h2 class="title">TV Shows</h2>
+    
+    <section id="tv-section">
+        <h2 class="title">TV Series</h2>
+        <h3>Airing Today</h3>
         <div class="content">
-            <%# tvs.forEach(tv => { %>
+            <% airing_today_series.forEach(airing_today_show => { %>
                 <div class="card">
-                    <a class="tv-poster">
-                        <img src="<%#=tv.image.medium%>" alt="<%#= tv.name %>">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= airing_today_show.poster_path %>" alt="<%= airing_today_show.title %>">
                     </a>
                 </div>
-            <%# }) %>
+            <% }) %>
         </div>
-    </section> -->
+        <h3>Popular</h3>
+        <div class="content">
+            <% popular_series.forEach(popular_show => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= popular_show.poster_path %>" alt="<%= popular_show.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+        <h3>Top Rated</h3>
+        <div class="content">
+            <% top_rated_series.forEach(top_rated_show => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= top_rated_show.poster_path %>" alt="<%= top_rated_show.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+        <h3>On The Air</h3>
+        <div class="content">
+            <% on_the_air_series.forEach(on_the_air_show => { %>
+                <div class="card">
+                    <a class="movie-poster">
+                        <img src="https://image.tmdb.org/t/p/w500<%= on_the_air_show.poster_path %>" alt="<%= on_the_air_show.title %>">
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    </section>
     
     <script src="./scripts/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
