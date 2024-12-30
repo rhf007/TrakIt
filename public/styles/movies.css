@@ -120,7 +120,18 @@ a {
 }
 
 section {
-    padding: 50px;
+    padding: 15px;
+}
+
+#movie-section{
+    background-color: var(--babypowder);
+}
+
+.filters{
+    padding: 0 15px 0 15px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .title {
@@ -129,13 +140,33 @@ section {
     color: var(--harvestgold);
     font-size: 2.2em;
     font-weight: 800;
-    margin-bottom: 30px;
+}
 
+.dropdown-center{
+    width: 20%;
+}
+
+.dropdown-toggle, .dropdown-menu{
+    width: 100%;
+}
+
+#decade-dropdown, #genre-dropdown, #country-dropdown {
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+.dropdown-toggle{
+    height: 2.5em;
+    font-size: 1.1em !important;
+    background-color: var(--redcmyk) !important;
+    color: var(--babypowder) !important;
+    border: none !important;
+    outline: none !important;
 }
 
 .content {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: row;
     flex-wrap: wrap;
 
@@ -157,7 +188,14 @@ section {
     transform: scale(1.1);
 }
 
-.card img {
+.card a {
+    aspect-ratio: 2 / 3; 
+    display: block;
+    overflow: hidden;
+}
+
+.card a > img {
+    height: 100%;
     width: 100%;
     object-fit: cover;
 }
