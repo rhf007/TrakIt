@@ -26,45 +26,37 @@ app.get('/', async(req, res) => {
     try {
         const now_playing_results = await moviedb.movieNowPlaying()
         now_playing_movies.push(...now_playing_results.results)
-        const now_playing_slice = now_playing_movies.slice(0, 18)
         
         const popular_results = await moviedb.moviePopular()
         popular_movies.push(...popular_results.results)
-        const popular_slice = popular_movies.slice(0, 18)
         
         const top_rated_results = await moviedb.movieTopRated()
         top_rated_movies.push(...top_rated_results.results)
-        const top_rated_slice = top_rated_movies.slice(0, 18)
         
         const upcoming_results = await moviedb.upcomingMovies()
         upcoming_movies.push(...upcoming_results.results)
-        const upcoming_slice = upcoming_movies.slice(0, 18)
         
         const airing_today_results = await moviedb.tvAiringToday()
         airing_today_series.push(...airing_today_results.results)
-        const airing_today_slice = airing_today_series.slice(0, 18)
         
         const popular_series_results = await moviedb.tvPopular()
         popular_series.push(...popular_series_results.results)
-        const popular_series_slice = popular_series.slice(0, 18)
         
         const on_the_air_results = await moviedb.tvOnTheAir()
         on_the_air_series.push(...on_the_air_results.results)
-        const on_the_air_slice = on_the_air_series.slice(0, 18)
         
         const top_rated_series_results = await moviedb.tvTopRated()
         top_rated_series.push(...top_rated_series_results.results)
-        const top_rated_series_slice = top_rated_series.slice(0, 18)
         
         res.render('index', {
-            now_playing_movies: now_playing_slice,
-            popular_movies: popular_slice,
-            top_rated_movies: top_rated_slice,
-            upcoming_movies: upcoming_slice,
-            airing_today_series: airing_today_slice,
-            popular_series: popular_series_slice,
-            on_the_air_series: on_the_air_slice,
-            top_rated_series: top_rated_series_slice
+            now_playing_movies: now_playing_movies,
+            popular_movies: popular_movies,
+            top_rated_movies: top_rated_movies,
+            upcoming_movies: upcoming_movies,
+            airing_today_series: airing_today_series,
+            popular_series: popular_series,
+            on_the_air_series: on_the_air_series,
+            top_rated_series: top_rated_series
         })} catch (error) {
             console.log(error)
             res.status(500).send('Internal Server Error')
