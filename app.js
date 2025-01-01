@@ -99,6 +99,52 @@ app.get('/movies', async (req, res) => {
     }
 });
 
+app.get('/movies/:category', async (req, res) => {
+    const category = req.params.category;
+    let page = parseInt(req.query.page) || 1;
+
+    try {
+        let category_results;
+        
+        switch(category) {
+            case 'now_playing':
+                category_results = await moviedb.movieNowPlaying({ page });
+                break;
+            case 'popular':
+                category_results = await moviedb.moviePopular({ page });
+                break;
+            case 'top_rated':
+                category_results = await moviedb.movieTopRated({ page });
+                break;
+            case 'upcoming':
+                category_results = await moviedb.upcomingMovies({ page });
+                break;
+            default:
+                return res.status(400).send('Invalid category');
+        }
+
+        const genreResponse = await moviedb.genreMovieList();
+        const genres = genreResponse.genres;
+        const countries = await moviedb.countries();
+        const movies = category_results.results;
+        const total_pages = category_results.total_pages;
+
+        // Send the data to the view
+        res.render('movies', {
+            movies: movies,
+            category: category,
+            genres: genres,
+            countries: countries,
+            totalPages: total_pages,
+            currentPage: page
+        });
+    } catch (error) {
+        console.error(`Error fetching data: ${error}`);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
     
     //TODO:IMPLEMENT SERIES ROUTE
 app.listen(5000, () => {
