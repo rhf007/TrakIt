@@ -1,0 +1,19 @@
+<!--TODO: APPLY PROPER STRUCTURE-->
+<header>
+    <a href="/" class="logo">TRAKIT</a>
+</header>
+<section id="details-section">
+    <h2><%= details.title || details.name %></h2>
+    <img src="https://image.tmdb.org/t/p/w500<%= details.poster_path %>" alt="<%= details.title || details.name %>">
+    <p><%= details.overview %></p>
+    <ul>
+        <li>Release Date: <%= details.release_date || details.first_air_date %></li>
+        <li>Rating: <%= details.vote_average %> / 10</li>
+        <li>Genres:
+            <% details.genres.forEach(genre => { %>
+                <span><%= genre.name %></span>
+            <% }); %>
+        </li>
+    </ul>
+    <a href="/">Back to Home</a>
+</section>

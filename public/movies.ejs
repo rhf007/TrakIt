@@ -13,7 +13,6 @@
     <script src="https://kit.fontawesome.com/888c06406f.js" crossorigin="anonymous"></script>
 </head>
 <!--TODO: HANDLE FILTER LOGIC(REQUIRES DATABASE)-->
-<!--TODO: MAKE EVERY CARD LEAD TO A PAGE OF MOVIE OVERVIEW AND INFO AND DETAILS-->
 <body>
     <header>
         <div class="home-nav">
@@ -78,7 +77,7 @@
                 <div class="content">
                     <% movies.forEach(movie => { %>
                         <div class="card">
-                            <a class="movie-poster">
+                            <a class="movie-poster" href="/details/<%= movie.id %>">
                                 <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" alt="<%= movie.title %>">
                             </a>
                         </div>

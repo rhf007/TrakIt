@@ -144,9 +144,49 @@ app.get('/movies/:category', async (req, res) => {
     }
 });
 
+app.get('/series', async (req, res) => {
 
-    
-    //TODO:IMPLEMENT SERIES ROUTE
+    const page = parseInt(req.query.page) || 1;
+    let tv = [];
+    try {
+        
+        const tvResults = await moviedb.discoverTv({ page });
+        tv = tvResults.results;
+
+        const genreResponse = await moviedb.genreTvList();
+        const genres = genreResponse.genres;
+        const countries = await moviedb.countries();
+
+        const totalPages = tvResults.total_pages;
+        const currentPage = tvResults.page;
+
+        res.render('series', {
+            series: tv,
+            genres,
+            countries,
+            currentPage,
+            totalPages,
+        });
+    } catch (error) {
+        console.error(`Error fetching data: ${error}`);
+        res.status(500).send('Internal Server Error');
+    }
+})
+
+//TODO: MAKE CATEGORIES FOR SERIES
+
+app.get('/details/:id', async (req, res) => {
+    const { id } = req.params;
+    //TODO: DO THE SAME FOR SERIES
+    try {
+        const movieDetails = await moviedb.movieInfo({ id }); 
+        res.render('details', { details: movieDetails });
+    } catch (error) {
+        console.error('Error fetching details:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 app.listen(5000, () => {
     console.log('server listening on port 5000')
 })
