@@ -22,40 +22,40 @@ app.get('/', async(req, res) => {
     let popular_series = []
     let on_the_air_series = []
     let top_rated_series = []
-
+    
     try {
         const now_playing_results = await moviedb.movieNowPlaying()
         now_playing_movies.push(...now_playing_results.results)
         const now_playing_slice = now_playing_movies.slice(0, 18)
-
+        
         const popular_results = await moviedb.moviePopular()
         popular_movies.push(...popular_results.results)
         const popular_slice = popular_movies.slice(0, 18)
-
+        
         const top_rated_results = await moviedb.movieTopRated()
         top_rated_movies.push(...top_rated_results.results)
         const top_rated_slice = top_rated_movies.slice(0, 18)
-
+        
         const upcoming_results = await moviedb.upcomingMovies()
         upcoming_movies.push(...upcoming_results.results)
         const upcoming_slice = upcoming_movies.slice(0, 18)
-
+        
         const airing_today_results = await moviedb.tvAiringToday()
         airing_today_series.push(...airing_today_results.results)
         const airing_today_slice = airing_today_series.slice(0, 18)
-
+        
         const popular_series_results = await moviedb.tvPopular()
         popular_series.push(...popular_series_results.results)
         const popular_series_slice = popular_series.slice(0, 18)
-
+        
         const on_the_air_results = await moviedb.tvOnTheAir()
         on_the_air_series.push(...on_the_air_results.results)
         const on_the_air_slice = on_the_air_series.slice(0, 18)
-
+        
         const top_rated_series_results = await moviedb.tvTopRated()
         top_rated_series.push(...top_rated_series_results.results)
         const top_rated_series_slice = top_rated_series.slice(0, 18)
-
+        
         res.render('index', {
             now_playing_movies: now_playing_slice,
             popular_movies: popular_slice,
@@ -70,36 +70,45 @@ app.get('/', async(req, res) => {
             res.status(500).send('Internal Server Error')
         }
     })
-
-    //TODO: CREATE DATABSE, HANDLE FORM VALIDATION, ETC
-    app.get('/sign-in', (req, res) => {
-        res.render('sign-in')
-    });
     
-    app.get('/register', (req, res) => {
-        res.render('register')
-    });
-    
-    app.get('/movies', async(req, res) => {
-        let Movies = []
-        const pages = 5
-        //TODO: PAGINATION?????
-        try{
-            for (let i = 1; i <= pages; i++) {
-                const movie_results = await moviedb.discoverMovie({page: i})
-                Movies.push(...movie_results.results)
-            }
-            const genre_response = await moviedb.genreMovieList()
-            const genres = genre_response.genres
-            const countries = await moviedb.countries()
-            res.render('movies', {movies: Movies, genres: genres, countries: countries})
-        } catch(error){
-            console.error(`Error fetching data: ${error}`);
-            res.status(500).send('Internal Server Error');
-        }
-    })
+    //TODO: CREATE DATABSE, HANDLE FORM VALIDATION, FILTERS ETC
+app.get('/sign-in', (req, res) => {
+    res.render('sign-in')
+});
+app.get('/register', (req, res) => {
+    res.render('register')
+});    
 
+app.get('/movies', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    let Movies = [];
+    try {
+        
+        const movieResults = await moviedb.discoverMovie({ page });
+        Movies = movieResults.results;
+
+        const genreResponse = await moviedb.genreMovieList();
+        const genres = genreResponse.genres;
+        const countries = await moviedb.countries();
+
+        const totalPages = movieResults.total_pages;
+        const currentPage = movieResults.page;
+
+        res.render('movies', {
+            movies: Movies,
+            genres,
+            countries,
+            currentPage,
+            totalPages,
+        });
+    } catch (error) {
+        console.error(`Error fetching data: ${error}`);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+    
     //TODO:IMPLEMENT SERIES ROUTE
-    app.listen(5000, () => {
-        console.log('server listening on port 5000')
-    })
+app.listen(5000, () => {
+    console.log('server listening on port 5000')
+})

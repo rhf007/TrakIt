@@ -180,7 +180,7 @@ section h3{
 
 .card {
     background-color: var(--babypowder) !important;
-    width: 10em;
+    width: 12em;
     box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
     border: none !important;
     outline: none;
