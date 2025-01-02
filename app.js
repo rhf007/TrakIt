@@ -1,11 +1,12 @@
-const express = require('express')
-const path = require('path')
+import express from 'express'
+import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
+import {MovieDb} from 'moviedb-promise';
+
 const app = express()
-require('dotenv').config();
-const { MovieDb } = require('moviedb-promise')
+const __dirname = path.resolve();
 const moviedb = new MovieDb(process.env.TMDB_API_KEY)
-
-
 
 app.use(express.static('./public'))
 
@@ -63,7 +64,7 @@ app.get('/', async(req, res) => {
         }
     })
     
-    //TODO: CREATE DATABSE, HANDLE FORM VALIDATION, FILTERS ETC
+    //TODO: HANDLE FORM VALIDATION, FILTERS ETC
 app.get('/sign-in', (req, res) => {
     res.render('sign-in')
 });
@@ -186,6 +187,7 @@ app.get('/details/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 app.listen(5000, () => {
     console.log('server listening on port 5000')
