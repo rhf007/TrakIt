@@ -47,7 +47,7 @@
         <div class="content">
             <% now_playing_movies.forEach(now_playing_movie => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= now_playing_movie.id %>">
+                    <a class="movie-poster" href="/movie/details/<%= now_playing_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= now_playing_movie.poster_path %>" alt="<%= now_playing_movie.title %>">
                     </a>
                 </div>
@@ -58,7 +58,7 @@
         <div class="content">
             <% popular_movies.forEach(popular_movie => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= popular_movie.id %>">
+                    <a class="movie-poster" href="/movie/details/<%= popular_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= popular_movie.poster_path %>" alt="<%= popular_movie.title %>">
                     </a>
                 </div>
@@ -69,7 +69,7 @@
         <div class="content">
             <% top_rated_movies.forEach(top_rated_movie => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= top_rated_movie.id %>">
+                    <a class="movie-poster" href="/movie/details/<%= top_rated_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= top_rated_movie.poster_path %>" alt="<%= top_rated_movie.title %>">
                     </a>
                 </div>
@@ -80,7 +80,7 @@
         <div class="content">
             <% upcoming_movies.forEach(upcoming_movie => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= upcoming_movie.id %>">
+                    <a class="movie-poster" href="/movie/details/<%= upcoming_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= upcoming_movie.poster_path %>" alt="<%= upcoming_movie.title %>">
                     </a>
                 </div>
@@ -95,7 +95,7 @@
         <div class="content">
             <% airing_today_series.forEach(airing_today_show => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= airing_today_show.id %>">
+                    <a class="movie-poster" href="/series/details/<%= airing_today_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= airing_today_show.poster_path %>" alt="<%= airing_today_show.title %>">
                     </a>
                 </div>
@@ -105,7 +105,7 @@
         <div class="content">
             <% popular_series.forEach(popular_show => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= popular_show.id %>">
+                    <a class="movie-poster" href="/series/details/<%= popular_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= popular_show.poster_path %>" alt="<%= popular_show.title %>">
                     </a>
                 </div>
@@ -115,7 +115,7 @@
         <div class="content">
             <% top_rated_series.forEach(top_rated_show => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= top_rated_show.id %>">
+                    <a class="movie-poster" href="/series/details/<%= top_rated_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= top_rated_show.poster_path %>" alt="<%= top_rated_show.title %>">
                     </a>
                 </div>
@@ -125,7 +125,7 @@
         <div class="content">
             <% on_the_air_series.forEach(on_the_air_show => { %>
                 <div class="card">
-                    <a class="movie-poster" href="/details/<%= on_the_air_show.id %>">
+                    <a class="movie-poster" href="/series/details/<%= on_the_air_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= on_the_air_show.poster_path %>" alt="<%= on_the_air_show.title %>">
                     </a>
                 </div>

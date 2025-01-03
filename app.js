@@ -332,17 +332,32 @@ app.get('/', async(req, res) => {
             res.status(500).send('Internal Server Error');
         }
     })
-    app.get('/details/:id', async (req, res) => {
+    app.get('/movie/details/:id', async (req, res) => {
         const { id } = req.params;
-        //TODO: DO THE SAME FOR SERIES
+        
         try {
-            const movieDetails = await moviedb.movieInfo({ id }); 
-            res.render('details', { details: movieDetails });
+            const movieDetails = await moviedb.movieInfo({ id });
+            
+            res.render('details', { details: movieDetails, type: 'movie' });
         } catch (error) {
-            console.error('Error fetching details:', error);
+            console.error('Error fetching movie details:', error);
             res.status(500).send('Internal Server Error');
         }
     });
+
+    app.get('/series/details/:id', async (req, res) => {
+        const { id } = req.params;
+        
+        try {
+            const seriesDetails = await moviedb.tvInfo({ id });
+            
+            res.render('details', { details: seriesDetails, type: 'series' });
+        } catch (error) {
+            console.error('Error fetching series details:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    
     
     
     app.listen(5000, () => {

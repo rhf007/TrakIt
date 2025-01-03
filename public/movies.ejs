@@ -78,7 +78,7 @@
                 <div class="content">
                     <% movies.forEach(movie => { %>
                         <div class="card">
-                            <a class="movie-poster" href="/details/<%= movie.id %>">
+                            <a class="movie-poster" href="/movie/details/<%= movie.id %>">
                                 <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_path %>" alt="<%= movie.title %>">
                             </a>
                         </div>
