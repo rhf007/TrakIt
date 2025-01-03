@@ -80,218 +80,271 @@ app.get('/', async(req, res) => {
     })
     
     //TODO: FILTERS
-app.get('/sign-in', (req, res) => {
-    res.render('sign-in', { errors: [] })
-});
-app.get('/register', (req, res) => {
-    res.render('register', { errors: [] })
-});
-
-app.post('/validate', async (req, res) => {
-    const { username, email, password, 'confirm-password': confirm_password } = req.body;
-    const errors = [];
-
-    const isRegistration = username && confirm_password;
-
-    if (!email || !password) {
-        errors.push('Email and password are required.');
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && !emailRegex.test(email)) {
-        errors.push('Invalid email address.');
-    }
-
-    if (password && password.length < 8) {
-        errors.push('Password must be at least 8 characters.');
-    }
-
-    if (isRegistration) {
-        if (!username) {
-            errors.push('Username is required.');
+    app.get('/sign-in', (req, res) => {
+        res.render('sign-in', { errors: [] })
+    });
+    app.get('/register', (req, res) => {
+        res.render('register', { errors: [] })
+    });
+    
+    app.post('/validate', async (req, res) => {
+        const { username, email, password, 'confirm-password': confirm_password } = req.body;
+        const errors = [];
+        
+        const isRegistration = username && confirm_password;
+        
+        if (!email || !password) {
+            errors.push('Email and password are required.');
         }
-
-        if (password !== confirm_password) {
-            errors.push('Passwords do not match.');
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) {
+            errors.push('Invalid email address.');
         }
-
-        try {
-            const [existingUser] = await pool.query(
-                'SELECT * FROM users WHERE username = ? OR email = ?',
-                [username, email]
-            );
-            if (existingUser.length > 0) {
-                errors.push('Username or email already exists.');
+        
+        if (password && password.length < 8) {
+            errors.push('Password must be at least 8 characters.');
+        }
+        
+        if (isRegistration) {
+            if (!username) {
+                errors.push('Username is required.');
             }
-        } catch (error) {
-            console.error('Database error during registration check:', error);
-            return res.status(500).send('Internal Server Error.');
+            
+            if (password !== confirm_password) {
+                errors.push('Passwords do not match.');
+            }
+            
+            try {
+                const [existingUser] = await pool.query(
+                    'SELECT * FROM users WHERE username = ? OR email = ?',
+                    [username, email]
+                );
+                if (existingUser.length > 0) {
+                    errors.push('Username or email already exists.');
+                }
+            } catch (error) {
+                console.error('Database error during registration check:', error);
+                return res.status(500).send('Internal Server Error.');
+            }
         }
-    }
-
-    if (errors.length > 0) {
-        const view = isRegistration ? 'register' : 'sign-in';
-        return res.status(400).render(view, { errors });
-    }
-
-    if (isRegistration) {
+        
+        if (errors.length > 0) {
+            const view = isRegistration ? 'register' : 'sign-in';
+            return res.status(400).render(view, { errors });
+        }
+        
+        if (isRegistration) {
+            try {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                
+                await pool.query(
+                    'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+                    [username, email, hashedPassword]
+                );
+                
+                req.session.user = { username, email };
+                
+                return res.redirect('/');
+            } catch (error) {
+                console.error('Error inserting user during registration:', error);
+                return res.status(500).send('Internal Server Error.');
+            }
+        }
+        
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            await pool.query(
-                'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-                [username, email, hashedPassword]
-            );
-
-            req.session.user = { username, email };
-
+            const [user] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+            if (user.length === 0) {
+                errors.push('Invalid email or password.');
+                return res.status(400).render('sign-in', { errors });
+            }
+            
+            const isPasswordValid = await bcrypt.compare(password, user[0].password);
+            if (!isPasswordValid) {
+                errors.push('Invalid email or password.');
+                return res.status(400).render('sign-in', { errors });
+            }
+            
+            req.session.user = { username: user[0].username, email: user[0].email };
+            
             return res.redirect('/');
         } catch (error) {
-            console.error('Error inserting user during registration:', error);
+            console.error('Database error during login:', error);
             return res.status(500).send('Internal Server Error.');
         }
-    }
-
-    try {
-        const [user] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (user.length === 0) {
-            errors.push('Invalid email or password.');
-            return res.status(400).render('sign-in', { errors });
+    });
+    
+    
+    app.get('/movies', async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        let Movies = [];
+        try {
+            
+            const movieResults = await moviedb.discoverMovie({ page });
+            Movies = movieResults.results;
+            
+            const genreResponse = await moviedb.genreMovieList();
+            const genres = genreResponse.genres;
+            const countries = await moviedb.countries();
+            
+            const totalPages = movieResults.total_pages;
+            const currentPage = movieResults.page;
+            
+            res.render('movies', {
+                movies: Movies,
+                genres,
+                countries,
+                currentPage,
+                totalPages,
+            });
+        } catch (error) {
+            console.error(`Error fetching data: ${error}`);
+            res.status(500).send('Internal Server Error');
         }
-
-        const isPasswordValid = await bcrypt.compare(password, user[0].password);
-        if (!isPasswordValid) {
-            errors.push('Invalid email or password.');
-            return res.status(400).render('sign-in', { errors });
-        }
-
-        req.session.user = { username: user[0].username, email: user[0].email };
-
-        return res.redirect('/');
-    } catch (error) {
-        console.error('Database error during login:', error);
-        return res.status(500).send('Internal Server Error.');
-    }
-});
-
-
-app.get('/movies', async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    let Movies = [];
-    try {
+    });
+    
+    app.get('/movies/:category', async (req, res) => {
+        const category = req.params.category;
+        console.log('Movies category:', category); // Log the category
+        let page = parseInt(req.query.page) || 1;
         
-        const movieResults = await moviedb.discoverMovie({ page });
-        Movies = movieResults.results;
-
-        const genreResponse = await moviedb.genreMovieList();
-        const genres = genreResponse.genres;
-        const countries = await moviedb.countries();
-
-        const totalPages = movieResults.total_pages;
-        const currentPage = movieResults.page;
-
-        res.render('movies', {
-            movies: Movies,
-            genres,
-            countries,
-            currentPage,
-            totalPages,
-        });
-    } catch (error) {
-        console.error(`Error fetching data: ${error}`);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.get('/movies/:category', async (req, res) => {
-    const category = req.params.category;
-    let page = parseInt(req.query.page) || 1;
-
-    try {
-        let category_results;
-        
-        switch(category) {
-            case 'now_playing':
+        try {
+            let category_results;
+            
+            switch(category) {
+                case 'now_playing':
                 category_results = await moviedb.movieNowPlaying({ page });
                 break;
-            case 'popular':
-                category_results = await moviedb.moviePopular({ page });
+                case 'popular':
+    category_results = await moviedb.moviePopular({ page });
                 break;
-            case 'top_rated':
+                case 'top_rated':
                 category_results = await moviedb.movieTopRated({ page });
                 break;
-            case 'upcoming':
+                case 'upcoming':
                 category_results = await moviedb.upcomingMovies({ page });
                 break;
-            default:
+                default:
                 return res.status(400).send('Invalid category');
+            }
+            
+            const genreResponse = await moviedb.genreMovieList();
+            const genres = genreResponse.genres;
+            const countries = await moviedb.countries();
+            const movies = category_results.results;
+            // in the popular endpoint in tmdb,
+            // the same number of totalpages in discover is returned
+            //  so in case the popular endpoint is chosen the pages are limited to  500
+            //  because any page beyond 500 returns status code 22
+            // same with series
+        let total_pages = category_results.total_pages;
+        if (category === 'popular' && total_pages > 500) {
+            total_pages = 500;
         }
-
-        const genreResponse = await moviedb.genreMovieList();
-        const genres = genreResponse.genres;
-        const countries = await moviedb.countries();
-        const movies = category_results.results;
-        const total_pages = category_results.total_pages;
-
-        // Send the data to the view
-        res.render('movies', {
-            movies: movies,
-            category: category,
-            genres: genres,
-            countries: countries,
-            totalPages: total_pages,
-            currentPage: page
-        });
-    } catch (error) {
-        console.error(`Error fetching data: ${error}`);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.get('/series', async (req, res) => {
-
-    const page = parseInt(req.query.page) || 1;
-    let tv = [];
-    try {
+            
+            res.render('movies', {
+                movies: movies,
+                category: category,
+                genres: genres,
+                countries: countries,
+                totalPages: total_pages,
+                currentPage: page
+            });
+        } catch (error) {
+            console.error(`Error fetching data: ${error}`);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    
+    app.get('/series', async (req, res) => {
         
-        const tvResults = await moviedb.discoverTv({ page });
-        tv = tvResults.results;
-
-        const genreResponse = await moviedb.genreTvList();
-        const genres = genreResponse.genres;
-        const countries = await moviedb.countries();
-
-        const totalPages = tvResults.total_pages;
-        const currentPage = tvResults.page;
-
-        res.render('series', {
-            series: tv,
-            genres,
-            countries,
-            currentPage,
-            totalPages,
-        });
-    } catch (error) {
-        console.error(`Error fetching data: ${error}`);
-        res.status(500).send('Internal Server Error');
-    }
-})
-
-//TODO: MAKE CATEGORIES FOR SERIES
-
-app.get('/details/:id', async (req, res) => {
-    const { id } = req.params;
-    //TODO: DO THE SAME FOR SERIES
-    try {
-        const movieDetails = await moviedb.movieInfo({ id }); 
-        res.render('details', { details: movieDetails });
-    } catch (error) {
-        console.error('Error fetching details:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-
-app.listen(5000, () => {
-    console.log('server listening on port 5000')
-})
+        const page = parseInt(req.query.page) || 1;
+        let tv = [];
+        try {
+            
+            const tvResults = await moviedb.discoverTv({ page });
+            tv = tvResults.results;
+            
+            const genreResponse = await moviedb.genreTvList();
+            const genres = genreResponse.genres;
+            const countries = await moviedb.countries();
+            
+            const totalPages = tvResults.total_pages;
+            const currentPage = tvResults.page;
+            
+            res.render('series', {
+                series: tv,
+                genres,
+                countries,
+                currentPage,
+                totalPages,
+            });
+        } catch (error) {
+            console.error(`Error fetching data: ${error}`);
+            res.status(500).send('Internal Server Error');
+        }
+    })
+    
+    app.get('/series/:category', async (req, res) => {
+        const category = req.params.category;
+        let page = parseInt(req.query.page) || 1;
+        
+        try {
+            let category_results;
+            
+            switch (category) {
+                case 'airing_today':
+                category_results = await moviedb.tvAiringToday({page})
+                break;
+                case 'on_the_air':
+                category_results = await moviedb.tvOnTheAir({page})
+                break;
+                case 'popular':
+                    category_results = await moviedb.tvPopular({ page });
+                break;
+                case 'top_rated':
+                category_results = await moviedb.tvTopRated({page})
+                break;
+                default:
+                return res.status(400).send('Invalid category');
+            }
+                const genreResponse = await moviedb.genreTvList();
+                const genres = genreResponse.genres;
+                const countries = await moviedb.countries();
+                const tvs = category_results.results;
+                
+        let total_pages = category_results.total_pages;
+        if (category === 'popular' && total_pages > 500) {
+            total_pages = 500;
+        }
+                
+                res.render('series', {
+                    series: tvs,
+                    category: category,
+                    genres: genres,
+                    countries: countries,
+                    totalPages: total_pages,
+                    currentPage: page
+                });
+            }
+        catch (error) {
+            console.error(`Error fetching data: ${error}`);
+            res.status(500).send('Internal Server Error');
+        }
+    })
+    app.get('/details/:id', async (req, res) => {
+        const { id } = req.params;
+        //TODO: DO THE SAME FOR SERIES
+        try {
+            const movieDetails = await moviedb.movieInfo({ id }); 
+            res.render('details', { details: movieDetails });
+        } catch (error) {
+            console.error('Error fetching details:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    
+    
+    app.listen(5000, () => {
+        console.log('server listening on port 5000')
+    })
