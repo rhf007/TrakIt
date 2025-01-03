@@ -3,6 +3,9 @@ import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 import {MovieDb} from 'moviedb-promise';
+import bcrypt from 'bcrypt';
+import pool from './db/connect.js';
+import session from 'express-session';
 
 const app = express()
 const __dirname = path.resolve();
@@ -13,6 +16,17 @@ app.use(express.static('./public'))
 // Set custom views folder location
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'ejs')
+//to avoid submission errors
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(
+    session({
+        secret: 'process.env.SESSION_SECRET',
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: false },
+    })
+);
 
 app.get('/', async(req, res) => {
     let now_playing_movies = []
@@ -57,20 +71,109 @@ app.get('/', async(req, res) => {
             airing_today_series: airing_today_series,
             popular_series: popular_series,
             on_the_air_series: on_the_air_series,
-            top_rated_series: top_rated_series
+            top_rated_series: top_rated_series,
+            user: req.session.user
         })} catch (error) {
             console.log(error)
             res.status(500).send('Internal Server Error')
         }
     })
     
-    //TODO: HANDLE FORM VALIDATION, FILTERS ETC
+    //TODO: FILTERS
 app.get('/sign-in', (req, res) => {
-    res.render('sign-in')
+    res.render('sign-in', { errors: [] })
 });
 app.get('/register', (req, res) => {
-    res.render('register')
-});    
+    res.render('register', { errors: [] })
+});
+
+app.post('/validate', async (req, res) => {
+    const { username, email, password, 'confirm-password': confirm_password } = req.body;
+    const errors = [];
+
+    const isRegistration = username && confirm_password;
+
+    if (!email || !password) {
+        errors.push('Email and password are required.');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        errors.push('Invalid email address.');
+    }
+
+    if (password && password.length < 8) {
+        errors.push('Password must be at least 8 characters.');
+    }
+
+    if (isRegistration) {
+        if (!username) {
+            errors.push('Username is required.');
+        }
+
+        if (password !== confirm_password) {
+            errors.push('Passwords do not match.');
+        }
+
+        try {
+            const [existingUser] = await pool.query(
+                'SELECT * FROM users WHERE username = ? OR email = ?',
+                [username, email]
+            );
+            if (existingUser.length > 0) {
+                errors.push('Username or email already exists.');
+            }
+        } catch (error) {
+            console.error('Database error during registration check:', error);
+            return res.status(500).send('Internal Server Error.');
+        }
+    }
+
+    if (errors.length > 0) {
+        const view = isRegistration ? 'register' : 'sign-in';
+        return res.status(400).render(view, { errors });
+    }
+
+    if (isRegistration) {
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            await pool.query(
+                'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+                [username, email, hashedPassword]
+            );
+
+            req.session.user = { username, email };
+
+            return res.redirect('/');
+        } catch (error) {
+            console.error('Error inserting user during registration:', error);
+            return res.status(500).send('Internal Server Error.');
+        }
+    }
+
+    try {
+        const [user] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (user.length === 0) {
+            errors.push('Invalid email or password.');
+            return res.status(400).render('sign-in', { errors });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user[0].password);
+        if (!isPasswordValid) {
+            errors.push('Invalid email or password.');
+            return res.status(400).render('sign-in', { errors });
+        }
+
+        req.session.user = { username: user[0].username, email: user[0].email };
+
+        return res.redirect('/');
+    } catch (error) {
+        console.error('Database error during login:', error);
+        return res.status(500).send('Internal Server Error.');
+    }
+});
+
 
 app.get('/movies', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
