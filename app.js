@@ -202,10 +202,62 @@ app.get('/', async(req, res) => {
             res.status(500).send('Internal Server Error');
         }
     });
+
+app.get('/api/movies', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const { year, genre, country, runtime } = req.query;
+    
+    try {
+        const discoverOptions = {
+            page,
+            include_adult: false,
+            include_video: false,
+            sort_by: 'popularity.desc'
+        };
+
+        if (year) {
+            discoverOptions.primary_release_year = year;
+        }
+
+        if (genre) {
+            discoverOptions.with_genres = genre;
+        }
+
+        if (country) {
+            discoverOptions.with_origin_country = country;
+        }
+
+        if (runtime) {
+            switch (runtime) {
+                case 'short':
+                    discoverOptions['with_runtime.lte'] = 90;
+                    break;
+                case 'medium':
+                    discoverOptions['with_runtime.gte'] = 90;
+                    discoverOptions['with_runtime.lte'] = 120;
+                    break;
+                case 'long':
+                    discoverOptions['with_runtime.gte'] = 120;
+                    break;
+            }
+        }
+
+        const movieResults = await moviedb.discoverMovie(discoverOptions);
+        
+        res.json({
+            movies: movieResults.results,
+            currentPage: movieResults.page,
+            totalPages: movieResults.total_pages
+        });
+    } catch (error) {
+        console.error(`Error fetching filtered movies: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+    
     
     app.get('/movies/:category', async (req, res) => {
         const category = req.params.category;
-        console.log('Movies category:', category); // Log the category
         let page = parseInt(req.query.page) || 1;
         
         try {
