@@ -78,7 +78,6 @@ app.get('/', async(req, res) => {
         }
     })
     
-    //TODO: FILTERS
     app.get('/sign-in', (req, res) => {
         res.render('sign-in', { errors: [] })
     });
@@ -209,8 +208,6 @@ app.get('/api/movies', async (req, res) => {
     try {
         const discoverOptions = {
             page,
-            include_adult: false,
-            include_video: false,
             sort_by: 'popularity.desc'
         };
 
@@ -335,6 +332,40 @@ app.get('/api/movies', async (req, res) => {
             res.status(500).send('Internal Server Error');
         }
     })
+
+app.get('/api/series', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const { year, genre, country } = req.query;
+
+    try {
+        const discoverOptions = {
+            page,
+            sort_by: 'popularity.desc'
+        };
+
+        if (year) {
+            discoverOptions.first_air_date_year = year;
+        }
+
+        if (genre) {
+            discoverOptions.with_genres = genre;
+        }
+
+        if (country) {
+            discoverOptions.with_origin_country = country;
+        }
+
+        const seriesResults = await moviedb.discoverTv(discoverOptions);
+        res.json({
+            series: seriesResults.results,
+            currentPage: seriesResults.page,
+            totalPages: seriesResults.total_pages
+        });
+    } catch (error) {
+        console.error(`Error fetching filtered series: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
     
     app.get('/series/:category', async (req, res) => {
         const category = req.params.category;
