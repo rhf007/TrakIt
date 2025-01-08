@@ -1,4 +1,4 @@
-/*import fonts*/
+/*fonts*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Rowdies:wght@300;400;700&display=swap');
 
@@ -17,7 +17,6 @@
     font-family: "Rowdies", "Poppins", sans-serif;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    /* color: var(--harvestgold); */
 }
 
 body{
@@ -116,10 +115,6 @@ input{
     box-sizing: border-box !important;
 }
 
-/* ::-webkit-input-placeholder{
-    color: var(--harvestgold);
-} */
-
 ::-webkit-input-placeholder, p{
     font-weight: 100;
 }
@@ -133,7 +128,16 @@ p > a:hover{
 }
 
 .btn{
+    background-color: var(--redcmyk) !important;
+    color: var(--babypowder) !important;
+    border: none !important;
+    outline: none !important;
+    width: 100% !important;
+    margin: 0.5em 0;
+}
+.btn:hover{
     background-color: var(--harvestgold) !important;
+    color: var(--richblack) !important;
     border: none !important;
     outline: none !important;
     width: 100% !important;

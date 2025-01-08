@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    //handle search input
+    const searchInput = document.querySelector('.search-input');
+    const searchButton = document.querySelector('.search-submit');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        // Redirect to search results page with query parameter
+        window.location.href = `/search?query=${encodeURIComponent(query)}`;
+    };
+
+    // when search buttton is clicked 
+    searchButton.addEventListener('click', handleSearch);
+
+    // when enter button is pressed
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch(e);
+        }
+    });
+
+    //years filter
     const min_year = 1870;
     const max_year = new Date().getFullYear();
     const decade_dropdown = document.getElementById('decade-dropdown');
@@ -9,12 +33,38 @@ document.addEventListener('DOMContentLoaded', () => {
         decade_dropdown.appendChild(decade);
     }
 
+    //handle filter logic
     let activeFilters = {
         year: null,
         genre: null,
         country: null
     };
 
+    //whenever a filter option is selected
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const button = e.target.closest('.dropdown-center').querySelector('button');
+
+            //get filter value and put it in active filters object to update url with it
+            //  and change button content to the selected filter value
+            if (e.target.dataset.year) {
+                activeFilters.year = e.target.dataset.year;
+                button.textContent = `${e.target.dataset.year}s`;
+            } else if (e.target.dataset.genreId) {
+                activeFilters.genre = e.target.dataset.genreId;
+                button.textContent = e.target.textContent;
+            } else if (e.target.dataset.countryCode) {
+                activeFilters.country = e.target.dataset.countryCode;
+                button.textContent = e.target.textContent;
+            }
+
+            updateURL();
+        });
+    });
+
+     //update url with selected filters
     const updateURL = () => {
         const params = new URLSearchParams(window.location.search);
 
@@ -32,10 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchFilteredSeries(params);
     };
 
+    //fetch series based on selected filters
     const fetchFilteredSeries = async (params) => {
         try {
+            //convert to json
             const response = await fetch(`/api/series?${params.toString()}`);
             const data = await response.json();
+
+            // display data
             const contentDiv = document.querySelector('.content');
             contentDiv.innerHTML = data.series.map(show => `
                 <div class="card">
@@ -51,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    //update pagination after filtering
     const updatePagination = (currentPage, totalPages) => {
         const paginationDiv = document.querySelector('.pagination');
         paginationDiv.innerHTML = `
@@ -59,25 +114,4 @@ document.addEventListener('DOMContentLoaded', () => {
             ${currentPage < totalPages ? `<a href="?page=${currentPage + 1}" class="btn btn-secondary btn-sm">Next</a>` : ''}
         `;
     };
-
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const button = e.target.closest('.dropdown-center').querySelector('button');
-
-            if (e.target.dataset.year) {
-                activeFilters.year = e.target.dataset.year;
-                button.textContent = `${e.target.dataset.year}s`;
-            } else if (e.target.dataset.genreId) {
-                activeFilters.genre = e.target.dataset.genreId;
-                button.textContent = e.target.textContent;
-            } else if (e.target.dataset.countryCode) {
-                activeFilters.country = e.target.dataset.countryCode;
-                button.textContent = e.target.textContent;
-            }
-
-            updateURL();
-        });
-    });
 });

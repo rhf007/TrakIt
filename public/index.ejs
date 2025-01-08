@@ -1,4 +1,3 @@
-<!--TODO: HANDLE SEARCH LOGIC-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,18 +16,26 @@
     <header>
         <div class="home-nav">
             <a class="logo" href="/">TRAKIT</a>
+
             <nav class="nav-nav">
                 <ul>
-                    <% if (!user) { %>
+                    <!--change options depending on if user is registered or not-->
+                    <% if (!locals.user) { %>
                         <li><a href="/sign-in">Sign In</a></li>
                         <li><a href="/register">Register</a></li>
+                    <% } else { %>
+                        <li><a href="/list">List</a></li>
+                        <li><a href="/logout">Log Out</a></li>
                     <% } %>
                     <li><a href="/movies">Movies</a></li>
                     <li><a href="/series">Series</a></li>
                 </ul>
             </nav>
+
+            <!--search bar-->
             <div class="search-bar">
                 <input type="search" class="search-input" placeholder="Search here..." tabindex="0">
+
                 <button class="search-submit" tabindex="0">
                     <i class="fa-solid fa-magnifying-glass fa-xs"></i>
                 </button>
@@ -41,96 +48,149 @@
             <h1>All your movies and TV shows in one place</h1>
         </div>
     </section>
+
     <section id="movie-section">
         <h2 class="title">Movies</h2>
+
         <h3>Now Playing</h3>
+
         <div class="content">
             <% now_playing_movies.forEach(now_playing_movie => { %>
                 <div class="card">
                     <a class="movie-poster" href="/movie/details/<%= now_playing_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= now_playing_movie.poster_path %>" alt="<%= now_playing_movie.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= now_playing_movie.title %>
+                    </div>
                 </div>
             <% }) %>
         </div>
-        <a href="/movies/now_playing?page=2">See more</a>
+
+        <a class="see-more" href="/movies/now_playing">See more</a>
+
         <h3>Popular</h3>
+
         <div class="content">
             <% popular_movies.forEach(popular_movie => { %>
                 <div class="card">
                     <a class="movie-poster" href="/movie/details/<%= popular_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= popular_movie.poster_path %>" alt="<%= popular_movie.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= popular_movie.title %>
+                    </div>
                 </div>
             <% }) %>
         </div>
-        <a href="/movies/popular?page=2">See more</a>
+
+        <a class="see-more" href="/movies/popular">See more</a>
+
         <h3>Top Rated</h3>
+
         <div class="content">
             <% top_rated_movies.forEach(top_rated_movie => { %>
                 <div class="card">
                     <a class="movie-poster" href="/movie/details/<%= top_rated_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= top_rated_movie.poster_path %>" alt="<%= top_rated_movie.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= top_rated_movie.title %>
+                    </div>
                 </div>
             <% }) %>
         </div>
-        <a href="/movies/top_rated?page=2">See more</a>
+
+        <a class="see-more" href="/movies/top_rated">See more</a>
+
         <h3>Upcoming</h3>
+
         <div class="content">
             <% upcoming_movies.forEach(upcoming_movie => { %>
                 <div class="card">
                     <a class="movie-poster" href="/movie/details/<%= upcoming_movie.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= upcoming_movie.poster_path %>" alt="<%= upcoming_movie.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= upcoming_movie.title %>
+                    </div>
                 </div>
             <% }) %>
         </div>
-        <a href="/movies/upcoming?page=2">See more</a>
+
+        <a class="see-more" href="/movies/upcoming">See more</a>
     </section>
     
     <section id="tv-section">
         <h2 class="title">TV Series</h2>
+
         <h3>Airing Today</h3>
+
         <div class="content">
             <% airing_today_series.forEach(airing_today_show => { %>
                 <div class="card">
                     <a class="movie-poster" href="/series/details/<%= airing_today_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= airing_today_show.poster_path %>" alt="<%= airing_today_show.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= airing_today_show.name %>
+                    </div>
                 </div>
             <% }) %>
         </div>
+
+        <a class="see-more" href="/series/airing_today">See More</a>
+
         <h3>Popular</h3>
+
         <div class="content">
             <% popular_series.forEach(popular_show => { %>
                 <div class="card">
                     <a class="movie-poster" href="/series/details/<%= popular_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= popular_show.poster_path %>" alt="<%= popular_show.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= popular_show.name %>
+                    </div>
                 </div>
             <% }) %>
         </div>
+
+        <a class="see-more" href="/series/popular">See More</a>
+
         <h3>Top Rated</h3>
+
         <div class="content">
             <% top_rated_series.forEach(top_rated_show => { %>
                 <div class="card">
                     <a class="movie-poster" href="/series/details/<%= top_rated_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= top_rated_show.poster_path %>" alt="<%= top_rated_show.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= top_rated_show.name %>
+                    </div>
                 </div>
             <% }) %>
         </div>
+
+        <a class="see-more" href="/series/top_rated">See More</a>
+
         <h3>On The Air</h3>
+
         <div class="content">
             <% on_the_air_series.forEach(on_the_air_show => { %>
                 <div class="card">
                     <a class="movie-poster" href="/series/details/<%= on_the_air_show.id %>">
                         <img src="https://image.tmdb.org/t/p/w500<%= on_the_air_show.poster_path %>" alt="<%= on_the_air_show.title %>">
                     </a>
+                    <div class="title-overlay">
+                        <%= on_the_air_show.name %>
+                    </div>
                 </div>
             <% }) %>
         </div>
+        
+        <a class="see-more" href="/series/on_the_air">See More</a>
     </section>
     
     <script src="./scripts/index.js"></script>

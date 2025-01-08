@@ -1,3 +1,4 @@
+// frontend/client side form validation
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('register-form');
     
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const password = document.getElementById('password');
-        if (password.value.length < 6) {
+        if (password.value.length < 8) {
             password.classList.add('is-invalid');
             is_valid = false;
         } else {

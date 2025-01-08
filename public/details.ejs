@@ -1,37 +1,106 @@
-<!--TODO: APPLY PROPER STRUCTURE-->
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" type="text/css" href="/styles/details.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
-    <link rel="manifest" href="./images/site.webmanifest">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/styles/details.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="manifest" href="/images/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/888c06406f.js" crossorigin="anonymous"></script>
-    </head>
-    <body>
-    <header>
-        <a href="/" class="logo">TRAKIT</a>
-    </header>
-    <section id="details-section">
-        <h2><%= details.title || details.name %></h2>
-        <img src="https://image.tmdb.org/t/p/w500<%= details.poster_path %>" alt="<%= details.title || details.name %>">
-        <p><%= details.overview %></p>
-        <ul>
-            <li>Release Date: <%= details.release_date || details.first_air_date %></li>
-            <li>Rating: <%= details.vote_average %> / 10</li>
-            <li>Genres:
-                <% details.genres.forEach(genre => { %>
-                    <span><%= genre.name %></span>
-                <% }); %>
-            </li>
-        </ul>
-        <a href="/">Back to Home</a>
+</head>
+<body>
+    <section class="details">
+        <div class="poster">
+            <img src="https://image.tmdb.org/t/p/w500<%= details.poster_path %>" alt="<%= details.title || details.name %>">
+        </div>
+
+        <div class="overview">
+            <!--Display name along with year, runtime/episodes and genres-->
+            <h1><%= details.title || details.name %></h1>
+
+            <ul class="details-list">
+                <li><%= new Date(details.release_date).getFullYear() || new Date(details.first_air_date).getFullYear() %></li>
+                <li>
+                    <% if (type === 'movie') { %>
+                        <%= details.runtime %> mins
+                    <% } else { %>
+                        <%= details.number_of_episodes %> Episode<%= details.number_of_episodes !== 1 ? 's' : '' %>
+                    <% } %>
+                </li>
+                <li id="genres">
+                    <% details.genres.forEach(genre => { %>
+                        <span><%= genre.name %></span>
+                        <% }); %>
+                    </li>
+                </ul>
+
+                <p>
+                    <!--handle works that don't have an overview-->
+                    <% if (details.overview) { %>
+                    <%= details.overview %> 
+                <% } else { %>
+                    <%= 'Sorry, no overview available!' %>
+                <% } %>
+                </p>
+
+                <div class="dropdown-div">
+                    <div class="btn-group dropend" data-media-id="<%= details.id %>" 
+                        data-media-type="<%= details.first_air_date ? 'series' : 'movie' %>">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuButton1">
+                            Add to list
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="#" data-status="to_watch">To watch</a></li>
+                            <li><a class="dropdown-item" href="#" data-status="completed">Completed</a></li>
+                            <li><a class="dropdown-item" href="#" data-status="on_hold">On Hold</a></li>
+                            <li><a class="dropdown-item" href="#" data-status="dropped">Dropped</a></li>
+                            <% if (details.first_air_date) { %>
+                                <li><a class="dropdown-item" href="#" data-status="watching">Watching</a></li>
+                                <% } %>
+                            </ul>
+                    </div>
+                </div>
+                
+                <%if (locals.user) {%>
+                    <div class="navigation-buttons">
+                    <a href="/" class="btn btn-primary">Home</a>
+                    <a href="/list" class="btn btn-primary">My List</a>
+                <% } else{ %>
+                    <div class="navigation-buttons" style="justify-content: center;">
+                        <a href="/" class="btn btn-primary">Home</a>
+                <%} %>
+                </div>
+        </div>
+
+        <!--Toast container -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <!--Success toast -->
+            <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Successfully added to your watchlist!
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+
+            <!--Error toast -->
+            <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="errorToastBody">
+                        An error occurred. Please try again.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
     </section>
-    
+    <script src="/scripts/details.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
