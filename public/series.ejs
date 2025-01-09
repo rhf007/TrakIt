@@ -46,6 +46,7 @@
     <section id="movie-section">
         <h2 class="title">Series</h2>
 
+        <% if (!locals.category) { %>
         <section class="filters">
             <div class="dropdown-center">
                 <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -77,6 +78,7 @@
                     </ul>
             </div>
         </section>
+        <% } %>
 
         <div class="content">
             <% series.forEach(show => { %>

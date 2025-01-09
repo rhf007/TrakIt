@@ -100,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a class="movie-poster" href="/movie/details/${movie.id}">
                         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
                     </a>
+                    <div class="title-overlay">
+                        ${movie.title}
+                    </div>
                 </div>
             `).join('');
 
