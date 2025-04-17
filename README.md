@@ -29,4 +29,4 @@ A movie and TV Series tracking app.
 
 This project specifically has been a passion project I've wanted to take on for ages so if you got suggestions and recommendations for improving and expanding it I'd be glad to recive your feedback on my email:
 
-rahofahazem512@gmail.com
+rahafhazem2002@gmail.com
